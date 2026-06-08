@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
+import Home from './pages/Home';
 import Testing from './pages/Testing';
 import Deployment from './pages/Deployment';
 
@@ -31,6 +32,20 @@ function App() {
               transition: 'all 0.2s'
             })}
           >
+            Home
+          </NavLink>
+          <NavLink 
+            to="/testing" 
+            style={({ isActive }) => ({
+              textDecoration: 'none',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              color: isActive ? '#fff' : 'var(--text-secondary)',
+              background: isActive ? 'var(--accent-blue-glow)' : 'transparent',
+              fontWeight: isActive ? 600 : 400,
+              transition: 'all 0.2s'
+            })}
+          >
             Testing
           </NavLink>
           <NavLink 
@@ -50,8 +65,10 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<Testing />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/testing" element={<Testing />} />
           <Route path="/deployment" element={<Deployment />} />
+          
         </Routes>
       </div>
     </Router>

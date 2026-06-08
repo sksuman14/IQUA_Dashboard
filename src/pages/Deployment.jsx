@@ -16,8 +16,8 @@ const fieldDevices = [
 
 const Deployment = () => {
   const [selectedDevice, setSelectedDevice] = useState(fieldDevices[0].id);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState('2024-04-18');
+  const [endDate, setEndDate] = useState('2024-10-18');
   
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);

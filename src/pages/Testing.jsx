@@ -10,8 +10,8 @@ const devices = [
 
 const Testing = () => {
   const [selectedDevice, setSelectedDevice] = useState(devices[0].id);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [startDate, setStartDate] = useState('2023-10-18');
+  const [endDate, setEndDate] = useState('2024-04-17');
   
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
