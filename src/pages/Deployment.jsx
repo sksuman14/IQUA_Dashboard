@@ -1,118 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { fetchIquaData } from '../api';
-import DeviceChart from '../components/DeviceChart';
-import DataCards from '../components/DataCards';
+import React from 'react';
 
-const fieldDevices = [
-  { id: 103, name: '103 - Diggian STP / Chandigarh Wastewater' },
-  { id: 104, name: '104 - Residence (House No. 5568, Sector 38-West)' },
-  { id: 105, name: '105 - Ropar Satluj River Water' },
-  { id: 106, name: '106 - Device 106' },
-  { id: 107, name: '107 - Device 107' },
-  { id: 108, name: '108 - Device 108' },
-  { id: 109, name: '109 - Device 109' },
-  { id: 110, name: '110 - Device 110' }
-];
+import img1 from '../assets/deployment-1.jpeg';
+import img2 from '../assets/deployment-2.jpeg';
+import img3 from '../assets/deployment-3.jpeg';
+import img4 from '../assets/deployment-4.jpeg';
+import img5 from '../assets/deployment-5.jpeg';
+import img6 from '../assets/deployment-6.jpeg';
+import img7 from '../assets/deployment-7.jpeg';
+import img8 from '../assets/deployment-8.jpeg';
+import img9 from '../assets/deployment-9.jpeg';
+import img10 from '../assets/deployment-10.jpeg';
+
+const deploymentImages = [img1, img2, img3, img4, img5, img6, img7, img8, img9, img10];
 
 const Deployment = () => {
-  const [selectedDevice, setSelectedDevice] = useState(fieldDevices[0].id);
-  const [startDate, setStartDate] = useState('2024-04-18');
-  const [endDate, setEndDate] = useState('2024-10-18');
-  
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const formatDateForAPI = (dateString) => {
-    if (!dateString) return '';
-    const [year, month, day] = dateString.split('-');
-    return `${day}-${month}-${year}`;
-  };
-
-  const loadData = async () => {
-    if (!startDate || !endDate) {
-      setError('Please enter both Start Date and End Date to view data.');
-      return;
-    }
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchIquaData(selectedDevice, formatDateForAPI(startDate), formatDateForAPI(endDate));
-      setData(result);
-    } catch (err) {
-      setError('Failed to fetch data. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Removed auto-fetch on mount so the dashboard waits for user input
-
-  const chartData = data?.data || [];
-  const latestDataPoint = chartData.length > 0 ? chartData[chartData.length - 1] : null;
-
   return (
     <div className="animate-fade-in">
       <div className="dashboard-header">
-        <h1><span>Chloritron Smart and IQUA</span> Dashboard</h1>
-        <p>Real-time water quality monitoring and analytics</p>
+        <h1><span>Chloritron Smart and IQUA</span> Deployment</h1>
+        <p>Field deployment images</p>
       </div>
 
-      <div className="controls-panel">
-        <select 
-          className="control-input"
-          value={selectedDevice} 
-          onChange={(e) => setSelectedDevice(Number(e.target.value))}
-        >
-          {fieldDevices.map(device => (
-            <option key={device.id} value={device.id}>
-              {device.name}
-            </option>
+      <div className="glass-panel" style={{ marginBottom: '32px' }}>
+        <h2 style={{ marginBottom: '24px', color: 'var(--accent-teal)' }}>Deployment Images</h2>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+          gap: '20px'
+        }}>
+          {deploymentImages.map((img, index) => (
+            <div key={index} style={{ 
+              borderRadius: '12px', 
+              overflow: 'hidden', 
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              aspectRatio: '3/4'
+            }}>
+              <img 
+                src={img} 
+                alt={`Deployment ${index + 1}`} 
+                style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s ease' }} 
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              />
+            </div>
           ))}
-        </select>
-        <input 
-          type="date" 
-          className="control-input"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input 
-          type="date" 
-          className="control-input"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-        <button className="btn" onClick={loadData}>
-          Fetch Data
-        </button>
+        </div>
       </div>
-
-      {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
-          <h2 style={{ color: 'var(--accent-blue)' }}>Loading Field Data...</h2>
-        </div>
-      ) : error ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}>
-          <div className="glass-panel" style={{ borderColor: 'var(--danger)' }}>
-            <h2 style={{ color: 'var(--danger)' }}>Error</h2>
-            <p>{error}</p>
-          </div>
-        </div>
-      ) : (
-        <>
-          <DataCards latestData={latestDataPoint} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            <DeviceChart data={chartData} dataKey="Temperature" name="Temperature" color="#f97316" unit="°C" />
-            <DeviceChart data={chartData} dataKey="Chlorine" name="Chlorine Level" color="#22c55e" unit="mg/L" />
-            <DeviceChart data={chartData} dataKey="DO" name="Dissolved Oxygen (DO)" color="#3b82f6" unit="mg/L" />
-            <DeviceChart data={chartData} dataKey="COD" name="Chemical Oxygen Demand (COD)" color="#8b5cf6" unit="mg/L" />
-            <DeviceChart data={chartData} dataKey="BOD" name="Biochemical Oxygen Demand (BOD)" color="#ec4899" unit="mg/L" />
-            <DeviceChart data={chartData} dataKey="TDS" name="Total Dissolved Solids (TDS)" color="#f59e0b" unit="ppm" />
-            <DeviceChart data={chartData} dataKey="pH" name="pH Level" color="#10b981" unit="" />
-            <DeviceChart data={chartData} dataKey="EC" name="Electrical Conductivity (EC)" color="#ef4444" unit="mS/cm" />
-          </div>
-        </>
-      )}
     </div>
   );
 };
